@@ -85,7 +85,19 @@ réimplémenter l'outil moi-même, module par module : c'est précisément à ce
 sert le protocole `REPRODUCTIBILITE.md`, dont chaque étape se termine par un
 critère de validation chiffré.
 
-## Limites et pistes d'amélioration (phase 2)
+## Phase 2 : réimplémentation complète sur une carène aux dimensions de la FDI
+
+La suite du projet consiste à **réimplémenter l'outil intégralement par mes
+soins**, en suivant le protocole `REPRODUCTIBILITE.md`, et à l'appliquer à une
+carène aux **dimensions principales publiques de la classe FDI** (frégate de
+défense et d'intervention construite par Naval Group à Lorient, dont le Kimon
+F-601) : longueur 121,6 m, largeur 17,7 m, déplacement d'environ 4 500 t à
+pleine charge.
+
+Il s'agit d'une carène paramétrique reprenant ces dimensions principales, et non
+d'une reproduction des formes réelles du navire, qui ne sont pas publiques.
+
+## Limites et pistes d'amélioration
 
 - Coque à murailles droites au-dessus de la flottaison (pas de tonture ni de
   quête réaliste). Amélioration : ajouter de l'évasement.
