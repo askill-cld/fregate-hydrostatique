@@ -152,7 +152,7 @@ solide en entretien.
 
 ---
 
-## Pour aller plus loin (phase 2, 2027)
+## Pour aller plus loin (phase 2, fin 2026)
 
 - Ajouter de l'évasement de coque au-dessus de la flottaison.
 - Coupler gîte et assiette.
