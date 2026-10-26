@@ -91,8 +91,7 @@ La suite du projet consiste à **réimplémenter l'outil intégralement par mes
 soins**, en suivant le protocole `REPRODUCTIBILITE.md`, et à l'appliquer à une
 carène aux **dimensions principales publiques de la classe FDI** (frégate de
 défense et d'intervention construite par Naval Group à Lorient, dont le Kimon
-F-601) : longueur 121,6 m, largeur 17,7 m, déplacement d'environ 4 500 t à
-pleine charge.
+F-601) : longueur 122 m, largeur 18 m, déplacement d'environ 4 500 t état de chargement non précisé par les sources .
 
 Il s'agit d'une carène paramétrique reprenant ces dimensions principales, et non
 d'une reproduction des formes réelles du navire, qui ne sont pas publiques.
