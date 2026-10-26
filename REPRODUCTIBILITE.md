@@ -157,4 +157,4 @@ solide en entretien.
 - Ajouter de l'évasement de coque au-dessus de la flottaison.
 - Coupler gîte et assiette.
 - Estimer la résistance à l'avancement et la puissance moteur.
-- Refaire l'étude pour un navire de soutien offshore (OSV).
+- Refaire l'étude pour  kimon (F-601) (FDI).
