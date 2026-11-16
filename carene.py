@@ -51,10 +51,10 @@ class Carene:
         extremites (x = +/- L/2). Forme parabolique.
         """
         x = np.asarray(x, dtype=float)
-        base = 1.0 - (2.0 * x / self.L) ** 2
-        base = np.clip(base, 0.0, None)   # pas de valeur negative hors coque
-        return base ** self.kp
-
+        x= np.clip(x, -self.L / 2.0, self.L / 2.0)  # on reste dans la coque
+        return (1.0 - ((2.0 * x) / self.L)**2) ** self.kp
+    
+        
     def facteur_vertical(self, z):
         """
         V(z) : comment la largeur varie de la quille vers le pont.
