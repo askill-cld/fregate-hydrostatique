@@ -38,15 +38,14 @@ def simpson(f, x):
     """
     f = np.asarray(f, dtype=float)
     x = np.asarray(x, dtype=float)
-    n = len(x) - 1  # nombre d'intervalles
-    if n % 2 != 0:
-        raise ValueError("Simpson exige un nombre pair d'intervalles "
-                         "(donc un nombre impair de points).")
-    h = (x[-1] - x[0]) / n
-    s = f[0] + f[-1]
-    s += 4.0 * np.sum(f[1:-1:2])   # points d'indice impair -> poids 4
-    s += 2.0 * np.sum(f[2:-1:2])   # points d'indice pair interieur -> poids 2
-    return s * h / 3.0
+    if len(f) % 2 == 0:
+        raise ValueError("simpson() : il faut un nombre impair de points")
+    else:
+        len_f = len(f)
+        h = (x[-1] - x[0]) / (len_f - 1)
+        somme = f[0] + f[-1] + 4 * np.sum(f[1:-1:2]) + 2 * np.sum(f[2:-2:2])
+        return (h / 3) * somme
+    
 
 
 def aire_centroide_polygone(points):
