@@ -65,9 +65,11 @@ class Carene:
             pour un premier calcul de stabilite.
         """
         z = np.asarray(z, dtype=float)
-        sous_eau = 1.0 - ((self.T - z) / self.T) ** self.kv
-        v = np.where(z <= self.T, sous_eau, 1.0)
-        return np.clip(v, 0.0, None)
+        z = np.clip(z, 0.0, self.T)              # "methode 1"
+        z = np.clip(z, 0.0, self.D)              # "methode 2" : ne fait plus rien
+        z = np.where(z > self.T, self.T, z)      # "methode 2" : ne fait plus rien
+        return 1.0 - ((self.T - z) / self.T) ** self.kv
+        
 
     def demi_largeur(self, x, z):
         """
