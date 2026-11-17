@@ -44,18 +44,15 @@ def calcul_hydrostatique(carene, KG, rho=RHO_MER, n=101):
     xs = carene.stations(n)            # positions longitudinales
     zsT = np.linspace(0.0, T, n)       # hauteurs de la quille a la flottaison
 
-    # --- Courbe des aires de section A(x) : aire immergee de chaque section ---
-    # Pour chaque station x, on integre la largeur totale 2*b sur la hauteur
-    # immergee [0, T]. Cela donne l'aire de la section sous l'eau.
+    # --- courbe des aires A(x), volume immerge et deplacement ---
     A = np.array([simpson(2.0 * carene.demi_largeur(x, zsT), zsT) for x in xs])
+    volume = simpson(A, xs)             # volume immerge (m^3)
+    deplacement = volume * rho          # massse du navire (t)
+    poids = deplacement * G                # poids du navire (N)
 
     # Moment vertical de chaque section par rapport a la quille (pour KB) :
     # integrale de z * (2*b) sur la hauteur.
     Mz = np.array([simpson(zsT * 2.0 * carene.demi_largeur(x, zsT), zsT) for x in xs])
-
-    # --- Volume immerge et deplacement ---
-    volume = simpson(A, xs)            # m^3
-    deplacement = rho * volume         # tonnes (poids du navire a l'equilibre)
 
     # --- Centre de carene B ---
     LCB = simpson(A * xs, xs) / volume          # position longitudinale (m, /milieu)
