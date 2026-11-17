@@ -65,9 +65,10 @@ class Carene:
             pour un premier calcul de stabilite.
         """
         z = np.asarray(z, dtype=float)
-        z = np.clip(z, 0.0, self.T)              # "methode 1"
-        z = np.clip(z, 0.0, self.D)              # "methode 2" : ne fait plus rien
-        z = np.where(z > self.T, self.T, z)      # "methode 2" : ne fait plus rien
+        z = np.clip(z, 0.0, self.T)  # au-dessus de T : V = 1 (flancs verticaux)
+        # Variante equivalente avec np.where :
+        #   z = np.where(z > self.T, self.T, z)
+        # (np.clip(z, 0, self.D) serait inutile : T <= D)
         return 1.0 - ((self.T - z) / self.T) ** self.kv
         
 
@@ -76,7 +77,7 @@ class Carene:
         b(x, z) : demi-largeur de la coque a la position longitudinale x
         et a la hauteur z. C'est LA fonction qui definit toute la geometrie.
         """
-        return (self.B / 2.0) * self.facteur_longitudinal(x) * self.facteur_vertical(z)
+        return (self.B/2.0) * self.facteur_longitudinal(x) * self.facteur_vertical(z)
 
     # ------------------------------------------------------------------
     # Aides pour generer des grilles de points (stations, sections, maillage)
