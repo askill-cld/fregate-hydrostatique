@@ -34,6 +34,7 @@ def calcul_hydrostatique(carene, KG, rho=RHO_MER, n=101):
              propriete de la coque. On la fournit en entree.
     rho    : masse volumique de l'eau (t/m^3)
     n      : nombre de points des grilles (impair -> Simpson)
+    "poids": poids du navire (kN) 
 
     Retour
     ------
@@ -47,16 +48,13 @@ def calcul_hydrostatique(carene, KG, rho=RHO_MER, n=101):
     # --- courbe des aires A(x), volume immerge et deplacement ---
     A = np.array([simpson(2.0 * carene.demi_largeur(x, zsT), zsT) for x in xs])
     volume = simpson(A, xs)             # volume immerge (m^3)
-    deplacement = volume * rho          # massse du navire (t)
-    poids = deplacement * G                # poids du navire (N)
+    deplacement = volume * rho          # masse du navire (t)
+    poids = deplacement * G          # poids du navire (kN)
 
-    # Moment vertical de chaque section par rapport a la quille (pour KB) :
-    # integrale de z * (2*b) sur la hauteur.
-    Mz = np.array([simpson(zsT * 2.0 * carene.demi_largeur(x, zsT), zsT) for x in xs])
-
-    # --- Centre de carene B ---
-    LCB = simpson(A * xs, xs) / volume          # position longitudinale (m, /milieu)
+    # --- Centre de carene B (KB en hauteur, LCB en longueur) ---
+    Mz = np.array([simpson(zsT * 2 * carene.demi_largeur(x, zsT), zsT) for x in xs])
     KB = simpson(Mz, xs) / volume               # hauteur au-dessus de la quille (m)
+    LCB = simpson(A * xs, xs) / volume          # position longitudinale (m, /milieu)
 
     # --- Plan de flottaison (a z = T) ---
     bw = carene.demi_largeur(xs, T)             # demi-largeur a la flottaison
