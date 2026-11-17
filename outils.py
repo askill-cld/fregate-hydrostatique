@@ -38,7 +38,13 @@ def simpson(f, x):
     """
     f = np.asarray(f, dtype=float)
     x = np.asarray(x, dtype=float)
-    if len(f) % 2 == 0:
+    if f.ndim != 1 or x.ndim != 1:
+        raise ValueError("simpson() : f et x doivent etre des vecteurs 1D")
+    elif len(f) != len(x):
+        raise ValueError("simpson() : f et x doivent avoir la meme taille")
+    elif len(f) < 3:
+        raise ValueError("simpson() : il faut au moins 3 points")
+    elif len(f) % 2 == 0:
         raise ValueError("simpson() : il faut un nombre impair de points")
     else:
         len_f = len(f)
