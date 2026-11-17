@@ -82,6 +82,7 @@ class Carene:
     # ------------------------------------------------------------------
     # Aides pour generer des grilles de points (stations, sections, maillage)
     # ------------------------------------------------------------------
+    
     def stations(self, n=101):
         """n positions longitudinales reparties de -L/2 a +L/2."""
         return np.linspace(-self.L / 2.0, self.L / 2.0, n)
@@ -103,8 +104,11 @@ class Carene:
         On ferme au pont (z=D) : on suppose la coque etanche jusqu'au pont,
         hypothese standard pour un calcul de stabilite (flottabilite intacte).
         """
-        zs = np.linspace(0.0, self.D, nz)
-        b = self.demi_largeur(x, zs)
-        tribord = np.column_stack([b, zs])             # flanc +y, de la quille au pont
-        babord = np.column_stack([-b[::-1], zs[::-1]])  # flanc -y, du pont a la quille
+        z = self.hauteurs(nz, zmax = self.D)
+        y = self.demi_largeur(x, z)
+        # On construit le contour du polygone (y,z) :
+        # - flanc tribord : (y,z) de la quille au pont
+        tribord = np.column_stack((y, z))
+        # - flanc babord : (y,z) du pont a la quille
+        babord = np.column_stack((-y[::-1], z[::-1]))
         return np.vstack([tribord, babord])
