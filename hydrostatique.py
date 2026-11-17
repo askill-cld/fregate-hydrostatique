@@ -34,7 +34,7 @@ def calcul_hydrostatique(carene, KG, rho=RHO_MER, n=101):
              propriete de la coque. On la fournit en entree.
     rho    : masse volumique de l'eau (t/m^3)
     n      : nombre de points des grilles (impair -> Simpson)
-    "poids": poids du navire (kN) 
+     
 
     Retour
     ------
@@ -88,7 +88,7 @@ def calcul_hydrostatique(carene, KG, rho=RHO_MER, n=101):
 
     return {
         "L": L, "B": B, "T": T, "D": carene.D, "KG": KG, "rho": rho,
-        "volume": volume, "deplacement": deplacement,
+        "volume": volume, "deplacement": deplacement,"poids": poids,
         "LCB": LCB, "KB": KB,
         "Aw": Aw, "LCF": LCF, "It": It, "IL": IL,
         "BMt": BMt, "BML": BML, "KMt": KMt, "GMt": GMt, "GML": GML,
@@ -110,6 +110,7 @@ def affiche_resultats(res):
         ("-- Carene --", None, ""),
         ("Volume immerge", res["volume"], "m3"),
         ("Deplacement", res["deplacement"], "t"),
+        ("Poids", res["poids"], "kN"),
         ("KB (centre de carene)", res["KB"], "m"),
         ("LCB (long.)", res["LCB"], "m"),
         ("-- Flottaison --", None, ""),
