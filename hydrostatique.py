@@ -56,17 +56,17 @@ def calcul_hydrostatique(carene, KG, rho=RHO_MER, n=101):
     KB = simpson(Mz, xs) / volume               # hauteur au-dessus de la quille (m)
     LCB = simpson(A * xs, xs) / volume          # position longitudinale (m, /milieu)
 
-    # --- Plan de flottaison (a z = T) ---
-    bw = carene.demi_largeur(xs, T)             # demi-largeur a la flottaison
-    Aw = simpson(2.0 * bw, xs)                  # aire du plan de flottaison (m^2)
+    # --- Plan de flottaison (a z = T) : bw, Aw, LCF, It, IL ---
+    # bw : les demi-largeurs à la flottaison (z = T), pour toutes les stations
+    bw = carene.demi_largeur(xs, T)
+    #Aw : l’aire du plan de flottaison
+    Aw = simpson(2.0 * bw, xs)                 # aire du plan de flottaison (m^2)
+    #LCF : son centre (le centre de flottaison)
     LCF = simpson(2.0 * bw * xs, xs) / Aw       # centre de flottaison (m, /milieu)
-
-    # Inertie transversale du plan de flottaison It :
-    # pour une bande de demi-largeur y, l'inertie autour de l'axe central
-    # vaut (2/3) y^3. On integre sur la longueur.
-    It = simpson((2.0 / 3.0) * bw ** 3, xs)     # m^4
-    # Inertie longitudinale IL (autour d'un axe transversal passant par LCF) :
-    IL = simpson(2.0 * bw * (xs - LCF) ** 2, xs)  # m^4
+    #It : son inertie transversale (axe longitudinal)
+    It = simpson(2.0 * bw**3 / 3.0, xs)         # inertie transversale (m^4)
+    #IL : son inertie longitudinale (axe transversal)
+    IL = simpson(2.0 * bw * (xs - LCF)**2, xs)  # inertie longitudinale (m^4)
 
     # --- Metacentre ---
     BMt = It / volume                  # rayon metacentrique transversal (m)
