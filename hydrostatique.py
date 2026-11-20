@@ -76,14 +76,13 @@ def calcul_hydrostatique(carene, KG, rho=RHO_MER, n=101):
     GMt = KMt - KG                             # hauteur metacentrique transversal (m)
     GML = KMl - KG                             # hauteur metacentrique longitudinal (m)
 
-    # --- Coefficients de forme (sans dimension, decrivent la finesse) ---
-    Am = A.max()                       # aire du maitre-couple (section max)
-    Cb = volume / (L * B * T)          # coefficient de bloc
-    Cm = Am / (B * T)                  # coefficient de maitre-couple
-    Cp = volume / (Am * L)             # coefficient prismatique
-    Cw = Aw / (L * B)                  # coefficient de flottaison
-
-    # --- Grandeurs pratiques ---
+    # --- Coefficients de forme (Am, Cb, Cm, Cp, Cw) 
+    Am = max(A)                                 # aire maximale (m^2)
+    Cb = volume / (L * B * T)                  # coefficient de bloc
+    Cm = Am / ( B * T)                      # coefficient de maitre-couple
+    Cp = volume / (Am * L)                      # coefficient prismatique
+    Cw = Aw / (B * L)                          # coefficient de flottaison
+    # --- grandeurs pratiques (TPC, MCT)
     TPC = Aw * rho / 100.0             # tonnes par cm d'enfoncement
     MCT = deplacement * GML / (100.0 * L)  # moment pour faire varier l'assiette de 1 cm
 
