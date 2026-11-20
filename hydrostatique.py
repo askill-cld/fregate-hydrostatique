@@ -68,12 +68,13 @@ def calcul_hydrostatique(carene, KG, rho=RHO_MER, n=101):
     #IL : son inertie longitudinale (axe transversal)
     IL = simpson(2.0 * bw * (xs - LCF)**2, xs)  # inertie longitudinale (m^4)
 
-    # --- Metacentre ---
-    BMt = It / volume                  # rayon metacentrique transversal (m)
-    BML = IL / volume                  # rayon metacentrique longitudinal (m)
-    KMt = KB + BMt                     # hauteur du metacentre transversal (m)
-    GMt = KMt - KG                     # hauteur metacentrique transversale (m)
-    GML = KB + BML - KG                # hauteur metacentrique longitudinale (m)
+    # --- Metacentre : BMt, BML, KMt, GMt, GML ---
+    BMt = It / volume                          # rayon metacentrique transversal (m)
+    BML = IL / volume                          # rayon metacentrique longitudinal (m)
+    KMt = KB + BMt                             # position du metacentre transversal (m)
+    KMl = KB + BML                             # position du metacentre longitudinal (m)
+    GMt = KMt - KG                             # hauteur metacentrique transversal (m)
+    GML = KMl - KG                             # hauteur metacentrique longitudinal (m)
 
     # --- Coefficients de forme (sans dimension, decrivent la finesse) ---
     Am = A.max()                       # aire du maitre-couple (section max)
