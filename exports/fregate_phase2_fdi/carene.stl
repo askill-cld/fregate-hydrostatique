@@ -89602,13 +89602,6 @@ solid carene_fregate
   facet normal 0 0 0
     outer loop
       vertex -61.00000 0.00000 9.00000
-      vertex -61.00000 -0.00000 9.00000
-      vertex -59.47500 -0.44438 9.00000
-    endloop
-  endfacet
-  facet normal 0 0 0
-    outer loop
-      vertex -61.00000 0.00000 9.00000
       vertex -59.47500 -0.44438 9.00000
       vertex -59.47500 0.44438 9.00000
     endloop
@@ -90710,13 +90703,6 @@ solid carene_fregate
       vertex 59.47500 0.44438 9.00000
       vertex 59.47500 -0.44438 9.00000
       vertex 61.00000 -0.00000 9.00000
-    endloop
-  endfacet
-  facet normal 0 0 0
-    outer loop
-      vertex 59.47500 0.44438 9.00000
-      vertex 61.00000 -0.00000 9.00000
-      vertex 61.00000 0.00000 9.00000
     endloop
   endfacet
 endsolid carene_fregate

@@ -28,8 +28,11 @@ def export_stl(carene, chemin, nx=81, nz=41):
 
     def ajoute_quad(p1, p2, p3, p4):
         """Un quadrilatere = deux triangles."""
-        triangles.append((p1, p2, p3))
-        triangles.append((p1, p3, p4))
+        if not (p1 == p2 or p1 == p3 or  p2 == p3 ):
+            triangles.append((p1, p2, p3))
+        if not (p1 == p3 or p1 == p4  or p3 == p4):
+            triangles.append((p1, p3, p4))
+
 
     # --- Flancs tribord (+y) et babord (-y) ---
     for signe in (+1.0, -1.0):
