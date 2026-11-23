@@ -43,8 +43,11 @@ def export_stl(carene, chemin, nx=81, nz=41):
                 p2 = (xs[i + 1], b10, zs[j])
                 p3 = (xs[i + 1], b11, zs[j + 1])
                 p4 = (xs[i], b01, zs[j + 1])
-                ajoute_quad(p1, p2, p3, p4)
-
+                if signe > 0.0:
+                    ajoute_quad(p1,p4,p3,p2)
+                else:
+                    ajoute_quad(p1,p2,p3,p4)
+                
     # --- Pont (z = D) pour fermer le dessus ---
     for i in range(nx - 1):
         bd0 = carene.demi_largeur(xs[i], carene.D)
