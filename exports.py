@@ -10,6 +10,7 @@ Trois sorties :
     naval, demi-largeurs par station et par ligne d'eau.
 """
 
+import os
 import numpy as np
 
 
@@ -92,6 +93,38 @@ def export_dxf_sections(carene, chemin, n_sections=11, nz=61):
                 f.write(f"10\n{y:.5f}\n20\n{z:.5f}\n")
         f.write("0\nENDSEC\n0\nEOF\n")
     return n_sections
+
+
+def export_dxf_couples(carene, dossier, n_sections=11, nz=61):
+    """
+    Ecrit un fichier DXF PAR couple (section transversale), en coordonnees
+    (y, z), dans le dossier donne. Dans SolidWorks, chaque fichier s'importe
+    sur un plan parallele au Plan de droite, place a la position x du couple,
+    pour faire un lissage entre les couples.
+
+    Les couples des extremites (x = +/- L/2) ont une largeur nulle : un profil
+    plat ne peut pas servir au lissage, ils ne sont donc pas exportes.
+
+    Retour : liste des (nom_de_fichier, x) exportes, de l'arriere vers l'avant.
+    """
+    positions = np.linspace(-carene.L / 2.0, carene.L / 2.0, n_sections)
+    os.makedirs(dossier, exist_ok=True)
+    couples = []
+    
+    for k, x in enumerate(positions):
+        if abs(x) < carene.L / 2.0:   # on ne fait pas les extremites
+            nom = f"couple_{k:02d}_x{x:+.1f}.dxf"
+            chemin = os.path.join(dossier, nom)
+            poly = carene.polygone_section(x, nz=nz)
+            with open(chemin, "w") as f:
+                f.write("0\nSECTION\n2\nENTITIES\n")
+                f.write("0\nLWPOLYLINE\n8\nCOUPLES\n")
+                f.write(f"90\n{len(poly)}\n70\n1\n")   # 70=1 : polyligne fermee
+                for (y, z) in poly:
+                    f.write(f"10\n{y:.5f}\n20\n{z:.5f}\n")
+                f.write("0\nENDSEC\n0\nEOF\n")
+            couples.append((nom, x))
+    return couples
 
 
 def export_table_cotes(carene, chemin, n_stations=11, n_lignes_eau=10):

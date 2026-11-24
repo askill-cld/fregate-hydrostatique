@@ -97,10 +97,12 @@ def main(nom="fregate"):
     print("\nGeneration des fichiers CAO...")
     nt = exports.export_stl(carene, os.path.join(dossier_exports, "carene.stl"))
     ns = exports.export_dxf_sections(carene, os.path.join(dossier_exports, "sections.dxf"))
+    nc = exports.export_dxf_couples(carene, os.path.join(dossier_exports, "couples"))
     exports.export_table_cotes(carene, os.path.join(dossier_exports, "table_des_cotes.csv"))
     rel_exports = os.path.relpath(dossier_exports, ici)
     print(f"   -> {rel_exports}/carene.stl ({nt} triangles)")
     print(f"   -> {rel_exports}/sections.dxf ({ns} couples)")
+    print(f"   -> {rel_exports}/couples/ ({len(nc)} fichiers)")
     print(f"   -> {rel_exports}/table_des_cotes.csv")
 
     # 6) --- Sauvegarde des resultats chiffres ----------------------------
