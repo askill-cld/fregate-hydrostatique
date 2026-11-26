@@ -34,6 +34,7 @@ def calcul_hydrostatique(carene, KG, rho=RHO_MER, n=101):
              propriete de la coque. On la fournit en entree.
     rho    : masse volumique de l'eau (t/m^3)
     n      : nombre de points des grilles (impair -> Simpson)
+     
 
     Retour
     ------
@@ -44,56 +45,50 @@ def calcul_hydrostatique(carene, KG, rho=RHO_MER, n=101):
     xs = carene.stations(n)            # positions longitudinales
     zsT = np.linspace(0.0, T, n)       # hauteurs de la quille a la flottaison
 
-    # --- Courbe des aires de section A(x) : aire immergee de chaque section ---
-    # Pour chaque station x, on integre la largeur totale 2*b sur la hauteur
-    # immergee [0, T]. Cela donne l'aire de la section sous l'eau.
+    # --- courbe des aires A(x), volume immerge et deplacement ---
     A = np.array([simpson(2.0 * carene.demi_largeur(x, zsT), zsT) for x in xs])
+    volume = simpson(A, xs)             # volume immerge (m^3)
+    deplacement = volume * rho          # masse du navire (t)
+    poids = deplacement * G          # poids du navire (kN)
 
-    # Moment vertical de chaque section par rapport a la quille (pour KB) :
-    # integrale de z * (2*b) sur la hauteur.
-    Mz = np.array([simpson(zsT * 2.0 * carene.demi_largeur(x, zsT), zsT) for x in xs])
-
-    # --- Volume immerge et deplacement ---
-    volume = simpson(A, xs)            # m^3
-    deplacement = rho * volume         # tonnes (poids du navire a l'equilibre)
-
-    # --- Centre de carene B ---
-    LCB = simpson(A * xs, xs) / volume          # position longitudinale (m, /milieu)
+    # --- Centre de carene B (KB en hauteur, LCB en longueur) ---
+    Mz = np.array([simpson(zsT * 2 * carene.demi_largeur(x, zsT), zsT) for x in xs])
     KB = simpson(Mz, xs) / volume               # hauteur au-dessus de la quille (m)
+    LCB = simpson(A * xs, xs) / volume          # position longitudinale (m, /milieu)
 
-    # --- Plan de flottaison (a z = T) ---
-    bw = carene.demi_largeur(xs, T)             # demi-largeur a la flottaison
-    Aw = simpson(2.0 * bw, xs)                  # aire du plan de flottaison (m^2)
+    # --- Plan de flottaison (a z = T) : bw, Aw, LCF, It, IL ---
+    # bw : les demi-largeurs à la flottaison (z = T), pour toutes les stations
+    bw = carene.demi_largeur(xs, T)
+    #Aw : l’aire du plan de flottaison
+    Aw = simpson(2.0 * bw, xs)                 # aire du plan de flottaison (m^2)
+    #LCF : son centre (le centre de flottaison)
     LCF = simpson(2.0 * bw * xs, xs) / Aw       # centre de flottaison (m, /milieu)
+    #It : son inertie transversale (axe longitudinal)
+    It = simpson(2.0 * bw**3 / 3.0, xs)         # inertie transversale (m^4)
+    #IL : son inertie longitudinale (axe transversal)
+    IL = simpson(2.0 * bw * (xs - LCF)**2, xs)  # inertie longitudinale (m^4)
 
-    # Inertie transversale du plan de flottaison It :
-    # pour une bande de demi-largeur y, l'inertie autour de l'axe central
-    # vaut (2/3) y^3. On integre sur la longueur.
-    It = simpson((2.0 / 3.0) * bw ** 3, xs)     # m^4
-    # Inertie longitudinale IL (autour d'un axe transversal passant par LCF) :
-    IL = simpson(2.0 * bw * (xs - LCF) ** 2, xs)  # m^4
+    # --- Metacentre : BMt, BML, KMt, GMt, GML ---
+    BMt = It / volume                          # rayon metacentrique transversal (m)
+    BML = IL / volume                          # rayon metacentrique longitudinal (m)
+    KMt = KB + BMt                             # position du metacentre transversal (m)
+    KMl = KB + BML                             # position du metacentre longitudinal (m)
+    GMt = KMt - KG                             # hauteur metacentrique transversal (m)
+    GML = KMl - KG                             # hauteur metacentrique longitudinal (m)
 
-    # --- Metacentre ---
-    BMt = It / volume                  # rayon metacentrique transversal (m)
-    BML = IL / volume                  # rayon metacentrique longitudinal (m)
-    KMt = KB + BMt                     # hauteur du metacentre transversal (m)
-    GMt = KMt - KG                     # hauteur metacentrique transversale (m)
-    GML = KB + BML - KG                # hauteur metacentrique longitudinale (m)
-
-    # --- Coefficients de forme (sans dimension, decrivent la finesse) ---
-    Am = A.max()                       # aire du maitre-couple (section max)
-    Cb = volume / (L * B * T)          # coefficient de bloc
-    Cm = Am / (B * T)                  # coefficient de maitre-couple
-    Cp = volume / (Am * L)             # coefficient prismatique
-    Cw = Aw / (L * B)                  # coefficient de flottaison
-
-    # --- Grandeurs pratiques ---
+    # --- Coefficients de forme (Am, Cb, Cm, Cp, Cw) 
+    Am = max(A)                                 # aire maximale (m^2)
+    Cb = volume / (L * B * T)                  # coefficient de bloc
+    Cm = Am / ( B * T)                      # coefficient de maitre-couple
+    Cp = volume / (Am * L)                      # coefficient prismatique
+    Cw = Aw / (B * L)                          # coefficient de flottaison
+    # --- grandeurs pratiques (TPC, MCT)
     TPC = Aw * rho / 100.0             # tonnes par cm d'enfoncement
     MCT = deplacement * GML / (100.0 * L)  # moment pour faire varier l'assiette de 1 cm
 
     return {
         "L": L, "B": B, "T": T, "D": carene.D, "KG": KG, "rho": rho,
-        "volume": volume, "deplacement": deplacement,
+        "volume": volume, "deplacement": deplacement,"poids": poids,
         "LCB": LCB, "KB": KB,
         "Aw": Aw, "LCF": LCF, "It": It, "IL": IL,
         "BMt": BMt, "BML": BML, "KMt": KMt, "GMt": GMt, "GML": GML,
@@ -115,6 +110,7 @@ def affiche_resultats(res):
         ("-- Carene --", None, ""),
         ("Volume immerge", res["volume"], "m3"),
         ("Deplacement", res["deplacement"], "t"),
+        ("Poids", res["poids"], "kN"),
         ("KB (centre de carene)", res["KB"], "m"),
         ("LCB (long.)", res["LCB"], "m"),
         ("-- Flottaison --", None, ""),

@@ -1,0 +1,33 @@
+Propriétés de masse de selected Solid Bodies:
+     Système de coordonnées: -- par défaut --
+
+Densité = 1000000.000 grammes par mètre cube
+
+Masse = 4386621739.930 grammes
+
+Volume = 4386.622 mètres cubes
+
+Superficie = 3429.665 mètres carrés
+
+Centre de gravité: ( mètres )
+	X = -0.009
+	Y = 0.000
+	Z = 2.764
+
+Principaux axes et moments d'inertie: ( grammes * mètres carrés )
+Pris au centre de gravité.
+	 Ix = ( 1.000,  0.000,  0.000)   	Px = 61508705513.323
+	 Iy = ( 0.000,  1.000,  0.000)   	Py = 3269419144611.242
+	 Iz = ( 0.000,  0.000,  1.000)   	Pz = 3320618955289.779
+
+Moments d'inertie: ( grammes * mètres carrés )
+Pris au centre de gravité et aligné avec le système de coordonnées de sortie. (En utilisant la notation de tenseur positive.)
+	Lxx = 61508728795.462	Lxy = 267632174.010	Lxz = 55757319.700
+	Lyx = 267632174.010	Lyy = 3269419122284.643	Lyz = -283407.762
+	Lzx = 55757319.700	Lzy = -283407.762	Lzz = 3320618954334.247
+
+Moments d'inertie: ( grammes * mètres carrés )
+Pris au système de coordonnées de sortie. (En utilisant la notation de tenseur positive.)
+	Ixx = 95031134700.855	Ixy = 267634350.227	Ixz = -58928813.274
+	Iyx = 267634350.227	Iyy = 3302941920539.693	Iyz = -919509.282
+	Izx = -58928813.274	Izy = -919509.282	Izz = 3320619346708.045

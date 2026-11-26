@@ -10,6 +10,7 @@ Trois sorties :
     naval, demi-largeurs par station et par ligne d'eau.
 """
 
+import os
 import numpy as np
 
 
@@ -28,8 +29,11 @@ def export_stl(carene, chemin, nx=81, nz=41):
 
     def ajoute_quad(p1, p2, p3, p4):
         """Un quadrilatere = deux triangles."""
-        triangles.append((p1, p2, p3))
-        triangles.append((p1, p3, p4))
+        if not (p1 == p2 or p1 == p3 or  p2 == p3 ):
+            triangles.append((p1, p2, p3))
+        if not (p1 == p3 or p1 == p4  or p3 == p4):
+            triangles.append((p1, p3, p4))
+
 
     # --- Flancs tribord (+y) et babord (-y) ---
     for signe in (+1.0, -1.0):
@@ -43,8 +47,11 @@ def export_stl(carene, chemin, nx=81, nz=41):
                 p2 = (xs[i + 1], b10, zs[j])
                 p3 = (xs[i + 1], b11, zs[j + 1])
                 p4 = (xs[i], b01, zs[j + 1])
-                ajoute_quad(p1, p2, p3, p4)
-
+                if signe > 0.0:
+                    ajoute_quad(p1,p4,p3,p2)
+                else:
+                    ajoute_quad(p1,p2,p3,p4)
+                
     # --- Pont (z = D) pour fermer le dessus ---
     for i in range(nx - 1):
         bd0 = carene.demi_largeur(xs[i], carene.D)
@@ -86,6 +93,41 @@ def export_dxf_sections(carene, chemin, n_sections=11, nz=61):
                 f.write(f"10\n{y:.5f}\n20\n{z:.5f}\n")
         f.write("0\nENDSEC\n0\nEOF\n")
     return n_sections
+
+
+def export_dxf_couples(carene, dossier, n_sections=11, nz=61,marge = 0.1):
+    """
+    Ecrit un fichier DXF PAR couple (section transversale), en coordonnees
+    (y, z), dans le dossier donne. Dans SolidWorks, chaque fichier s'importe
+    sur un plan parallele au Plan de droite, place a la position x du couple,
+    pour faire un lissage entre les couples.
+
+    Les couples des extremites (x = +/- L/2) ont une largeur nulle : un profil
+    plat ne peut pas servir au lissage. On les rapproche donc legerement du
+    milieu (de 'marge' metres) pour garder un vrai couple, tres fin, de meme
+    forme et de meme nombre de points que les autres.
+
+    Retour : liste des (nom_de_fichier, x) exportes, de l'arriere vers l'avant.
+    """
+    
+    positions = np.linspace(-carene.L / 2.0 , carene.L / 2.0 , n_sections)
+    positions = np.clip(positions, -carene.L/2.0 + marge, carene.L/2.0 - marge)
+    os.makedirs(dossier, exist_ok=True)
+    couples = []
+
+    for k, x in enumerate(positions):
+        nom = f"couple_{k:02d}_x{x:+.1f}.dxf"
+        chemin = os.path.join(dossier, nom)
+        poly = carene.polygone_section(x, nz=nz)
+        with open(chemin, "w") as f:
+            f.write("0\nSECTION\n2\nENTITIES\n")
+            f.write("0\nLWPOLYLINE\n8\nCOUPLES\n")
+            f.write(f"90\n{len(poly)}\n70\n1\n")   # 70=1 : polyligne fermee
+            for (y, z) in poly:
+                f.write(f"10\n{y:.5f}\n20\n{z:.5f}\n")
+            f.write("0\nENDSEC\n0\nEOF\n")
+        couples.append((nom, x))
+    return couples
 
 
 def export_table_cotes(carene, chemin, n_stations=11, n_lignes_eau=10):

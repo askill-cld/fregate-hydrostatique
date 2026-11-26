@@ -51,10 +51,10 @@ class Carene:
         extremites (x = +/- L/2). Forme parabolique.
         """
         x = np.asarray(x, dtype=float)
-        base = 1.0 - (2.0 * x / self.L) ** 2
-        base = np.clip(base, 0.0, None)   # pas de valeur negative hors coque
-        return base ** self.kp
-
+        x= np.clip(x, -self.L / 2.0, self.L / 2.0)  # on reste dans la coque
+        return (1.0 - ((2.0 * x) / self.L)**2) ** self.kp
+    
+        
     def facteur_vertical(self, z):
         """
         V(z) : comment la largeur varie de la quille vers le pont.
@@ -65,20 +65,24 @@ class Carene:
             pour un premier calcul de stabilite.
         """
         z = np.asarray(z, dtype=float)
-        sous_eau = 1.0 - ((self.T - z) / self.T) ** self.kv
-        v = np.where(z <= self.T, sous_eau, 1.0)
-        return np.clip(v, 0.0, None)
+        z = np.clip(z, 0.0, self.T)  # au-dessus de T : V = 1 (flancs verticaux)
+        # Variante equivalente avec np.where :
+        #   z = np.where(z > self.T, self.T, z)
+        # (np.clip(z, 0, self.D) serait inutile : T <= D)
+        return 1.0 - ((self.T - z) / self.T) ** self.kv
+        
 
     def demi_largeur(self, x, z):
         """
         b(x, z) : demi-largeur de la coque a la position longitudinale x
         et a la hauteur z. C'est LA fonction qui definit toute la geometrie.
         """
-        return (self.B / 2.0) * self.facteur_longitudinal(x) * self.facteur_vertical(z)
+        return (self.B/2.0) * self.facteur_longitudinal(x) * self.facteur_vertical(z)
 
     # ------------------------------------------------------------------
     # Aides pour generer des grilles de points (stations, sections, maillage)
     # ------------------------------------------------------------------
+    
     def stations(self, n=101):
         """n positions longitudinales reparties de -L/2 a +L/2."""
         return np.linspace(-self.L / 2.0, self.L / 2.0, n)
@@ -100,8 +104,11 @@ class Carene:
         On ferme au pont (z=D) : on suppose la coque etanche jusqu'au pont,
         hypothese standard pour un calcul de stabilite (flottabilite intacte).
         """
-        zs = np.linspace(0.0, self.D, nz)
-        b = self.demi_largeur(x, zs)
-        tribord = np.column_stack([b, zs])             # flanc +y, de la quille au pont
-        babord = np.column_stack([-b[::-1], zs[::-1]])  # flanc -y, du pont a la quille
+        z = self.hauteurs(nz, zmax = self.D)
+        y = self.demi_largeur(x, z)
+        # On construit le contour du polygone (y,z) :
+        # - flanc tribord : (y,z) de la quille au pont
+        tribord = np.column_stack((y, z))
+        # - flanc babord : (y,z) du pont a la quille
+        babord = np.column_stack((-y[::-1], z[::-1]))
         return np.vstack([tribord, babord])

@@ -79,20 +79,19 @@ La répartition est la suivante. J'ai défini le sujet, le type de navire, ses
 paramètres principaux et le périmètre technique retenu ; l'assistant a écrit
 l'implémentation Python et la documentation. L'import et l'exploitation de la
 géométrie dans Fusion 360 sont de mon fait.
+Pour la phase 2, j’ai écrit le jeu de paramètres de la FDI et la dichotomie du calage, avec l’aide et la correction de l’assistant, qui a écrit le reste du code et la documentation de cette phase. Puis j'ai réécrit moi-même le cœur de l'outil (Simpson, carène, hydrostatique)
 
 La finalité de ce projet est avant tout pédagogique. Mon objectif est de
 réimplémenter l'outil moi-même, module par module : c'est précisément à cela que
 sert le protocole `REPRODUCTIBILITE.md`, dont chaque étape se termine par un
 critère de validation chiffré.
 
-## Phase 2 : réimplémentation complète sur une carène aux dimensions de la FDI
 
-La suite du projet consiste à **réimplémenter l'outil intégralement par mes
-soins**, en suivant le protocole `REPRODUCTIBILITE.md`, et à l'appliquer à une
+## Phase 2 : carène aux dimensions de la FDI, réimplémentation du cœur et validation
+
+La suite du projet consiste à **réimplémenter l'outil intégralement par mes soins**, en suivant le protocole `REPRODUCTIBILITE.md`, et à l'appliquer à une
 carène aux **dimensions principales publiques de la classe FDI** (frégate de
-défense et d'intervention construite par Naval Group à Lorient, dont le Kimon
-F-601) : longueur 121,6 m, largeur 17,7 m, déplacement d'environ 4 500 t à
-pleine charge.
+défense et d'intervention construite par Naval Group à Lorient, dont le Kimon F-601) : longueur 122 m, largeur 18 m, déplacement d'environ 4 500 t (état de chargement non précisé par les sources).
 
 Il s'agit d'une carène paramétrique reprenant ces dimensions principales, et non
 d'une reproduction des formes réelles du navire, qui ne sont pas publiques.
@@ -103,4 +102,4 @@ d'une reproduction des formes réelles du navire, qui ne sont pas publiques.
   quête réaliste). Amélioration : ajouter de l'évasement.
 - Stabilité calculée en gîte pure (pas d'assiette libre couplée).
 - À ajouter ensuite : estimation de la résistance à l'avancement et de la
-  puissance moteur ; étude d'un navire de soutien offshore (OSV).
+  puissance moteur.
